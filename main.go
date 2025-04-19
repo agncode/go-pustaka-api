@@ -40,18 +40,34 @@ func main() {
 		// 	fmt.Println("=======================================")
 		// } 
 
-		var book book.Book //untuk menampung data dari tabel book
+		var books []book.Book //untuk menampung data dari tabel book
 
-		err= db.First(&book).Error //untuk mengisi variabel book dengan data pertama dari tabel book
+		err = db.Debug().Where("title = ?","Belajar Golang").Find(&books).Error //untuk mengisi variabel books dengan data dari tabel book
 		if err != nil {
 			fmt.Println("=======================================")
 			fmt.Println("Failed to find book record")
-			fmt.Println("=======================================")
+			fmt.Println("=======================================")	
 		}
 
-		fmt.Println("Title: ", book.Title)
-		fmt.Println("Description: ", book.Description)
-		fmt.Printf("Book Object %v ", book.Price) //untuk menampilkan data book
+		for _, book := range books {//untuk menampilkan data book
+			fmt.Println("=======================================")
+			fmt.Println("Title: ", book.Title)
+			fmt.Println("Description: ", book.Description)
+			fmt.Printf("Book Object %v\n", book) //untuk menampilkan data book
+		}
+
+		//var book book.Book //untuk menampung data dari tabel book
+
+		// err= db.Debug().First(&book,4).Error //untuk mengisi variabel book dengan data pertama dari tabel book
+		// if err != nil {
+		// 	fmt.Println("=======================================")
+		// 	fmt.Println("Failed to find book record")
+		// 	fmt.Println("=======================================")
+		// }
+
+		// fmt.Println("Title: ", book.Title)
+		// fmt.Println("Description: ", book.Description)
+		// fmt.Printf("Book Object %v ", book.Price) //untuk menampilkan data book
 
 		
 		

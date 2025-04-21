@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 
@@ -22,55 +21,31 @@ func main() {
 		
 		db.AutoMigrate(&book.Book{})//untuk migrasi tabel book ke database pustaka-api
 
-		//CRUD
-		//==========================
-		// Create Data
-		//==========================
-		// book := book.Book{}
-		// book.Title=       "Atomic Habits"
-		// book.Description= "Belajar habit atau kebiasaan menggunakan buku ini"
-		// book.Price=       120000
-		// book.Discount= 	25
-		// book.Rating =   4
+		bookRepository := book.NewRepository(db)//untuk membuat repository baru dengan nama bookRepository
 
-		// err = db.Create(&book).Error
-		// if err != nil {
-		// 	fmt.Println("=======================================")
-		// 	fmt.Println("Failed to create book record")
-		// 	fmt.Println("=======================================")
-		// } 
-
-		var books []book.Book //untuk menampung data dari tabel book
-
-		err = db.Debug().Where("title = ?","Belajar Golang").Find(&books).Error //untuk mengisi variabel books dengan data dari tabel book
-		if err != nil {
-			fmt.Println("=======================================")
-			fmt.Println("Failed to find book record")
-			fmt.Println("=======================================")	
-		}
-
-		for _, book := range books {//untuk menampilkan data book
-			fmt.Println("=======================================")
-			fmt.Println("Title: ", book.Title)
-			fmt.Println("Description: ", book.Description)
-			fmt.Printf("Book Object %v\n", book) //untuk menampilkan data book
-		}
-
-		//var book book.Book //untuk menampung data dari tabel book
-
-		// err= db.Debug().First(&book,4).Error //untuk mengisi variabel book dengan data pertama dari tabel book
-		// if err != nil {
-		// 	fmt.Println("=======================================")
-		// 	fmt.Println("Failed to find book record")
-		// 	fmt.Println("=======================================")
+		// book := book.Book{
+		// 	Title: "Belajar Jafa",
+		// 	Description: "Buku ini adalah buku tentang belajar jafa",
+		// 	Price: 18000,
+		// 	Rating: 4,
+		// 	Discount: 0,
 		// }
+		// bookRepository.Create(book)//untuk menambahkan data buku ke database pustaka-api
 
-		// fmt.Println("Title: ", book.Title)
-		// fmt.Println("Description: ", book.Description)
-		// fmt.Printf("Book Object %v ", book.Price) //untuk menampilkan data book
 
-		
-		
+
+		books,err := bookRepository.FindAll()//untuk mengambil semua data buku dari database pustaka-api
+		if err != nil {fmt.Print(err)}
+
+
+		for _, book := range books {
+			fmt.Println("==============================================")
+			fmt.Println("Title:", book.Title)
+			fmt.Println("Description:", book.Description)
+			fmt.Println("Price:", book.Price)
+			fmt.Println("==============================================")
+		}
+
 	router := gin.Default()//untuk membuat router baru
 
 	v1 := router.Group("/v1")//untuk membuat grup router baru dengan prefix /v1
@@ -82,8 +57,4 @@ func main() {
 	v1.POST("/books",handler.PostBooksHandler)
 
 	router.Run(":8888")
-}
-type BookInput struct{
-	Title string 		`json:"title" binding:"required"`
-	Price json.Number	`json:"price" binding:"required,number"`
 }

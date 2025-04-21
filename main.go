@@ -20,17 +20,17 @@ func main() {
 		}
 		
 		db.AutoMigrate(&book.Book{})//untuk migrasi tabel book ke database pustaka-api
-
+		
 		bookRepository := book.NewRepository(db)//untuk membuat repository baru dengan nama bookRepository
+		bookService := book.NewService(bookRepository)//untuk membuat service baru dengan nama bookService
 
-		// book := book.Book{
-		// 	Title: "Belajar Jafa",
-		// 	Description: "Buku ini adalah buku tentang belajar jafa",
-		// 	Price: 18000,
-		// 	Rating: 4,
-		// 	Discount: 0,
-		// }
-		// bookRepository.Create(book)//untuk menambahkan data buku ke database pustaka-api
+		//Anggap ini adalah data yang ingin kita masukkan ke dalam database atau handler
+		bookRequest := book.BookRequest{
+			Title: "Belajar Jafa ke DUA",
+			Description: "Buku ini adalah buku tentang belajar jafa ke DUA",
+			Price: "48000",
+		}
+		bookService.Create(bookRequest)//untuk membuat buku baru dengan nama bookService
 
 
 
@@ -57,4 +57,11 @@ func main() {
 	v1.POST("/books",handler.PostBooksHandler)
 
 	router.Run(":8888")
+
+	//main
+	//handler 
+	//service
+	//repository
+	//ddb
+	//mysql
 }
